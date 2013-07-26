@@ -1,0 +1,40 @@
+#
+# MAKEFILE.MSC
+# Makefile for JLCD directory changer -- MSVC++ DOS compiler.
+#
+# ver 1.0, 05 Sep 1998
+#
+# Public domain by:
+#   Jari Laaksonen
+#   Arkkitehdinkatu 30 A 2
+#   FIN-33720 Tampere
+#   FINLAND
+#
+#   Fidonet : 2:220/855.20
+#   Internet: jla@to.icl.fi
+#
+
+CFLAGS = /nologo /Zi /W4 /AL
+LFLAGS = /nologo /STACK:10240
+OBJS   = jlcd.obj ffbuff.obj stristr.obj getdisk.obj vidmgr.obj vmgrdos.obj vm_lb.obj opsys.obj
+PROJ   = jlcdmsc
+
+!ifdef debug
+CFLAGS = $(CFLAGS) /Od -D_DEBUG
+!else
+CFLAGS = $(CFLAGS) -DNDEBUG
+!endif
+
+all: $(PROJ).exe
+
+$(PROJ).exe: $(OBJS)
+  link $(LFLAGS) $(OBJS), $(PROJ).exe,,,,
+
+.cpp.obj:
+  cl $(CFLAGS) /c $<
+
+.c.obj:
+  cl $(CFLAGS) /c $<
+
+clean:
+  del $(OBJS)

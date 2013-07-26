@@ -1,0 +1,48 @@
+#
+# MAKEFILE.DOS
+# Makefile for JLCD directory changer -- Watcom DOS compiler.
+#
+# ver 1.0, 05 Sep 1998
+#
+# Public domain by:
+#   Jari Laaksonen
+#   Arkkitehdinkatu 30 A 2
+#   FIN-33720 Tampere
+#   FINLAND
+#
+#   Fidonet : 2:220/855.20
+#   Internet: jla@to.icl.fi
+#
+
+CFLAGS = -w4 -zq -bt=dos -e25
+LINK   = wlink op st=0x8000 d all op m op q op symf op c op maxe=25
+OBJS   = ffbuff.obj jlcd.obj stristr.obj getdisk.obj vidmgr.obj vmgrdos.obj vm_lb.obj opsys.obj
+LOBJS  = ffbuff.obj,jlcd.obj,stristr.obj,getdisk.obj,vidmgr.obj,vmgrdos.obj,vm_lb.obj,opsys.obj
+PROJ   = jlcdwc
+
+WCC    = wcc
+WPP    = wpp
+CFLAGS = $(CFLAGS) -ml -2
+LINK   = $(LINK) SYS dos
+
+!ifdef debug
+CFLAGS = $(CFLAGS) -d2 -od -D_DEBUG
+!else
+CFLAGS = $(CFLAGS) -otmlra -s -DNDEBUG
+!endif
+
+$(PROJ).exe: $(OBJS)
+  echo >NUL @<<$(PROJ).LNK
+  NAME $(PROJ)
+  FIL $(LOBJS)
+<<
+  $(LINK) @$(PROJ).LNK
+
+.cpp.obj:
+  $(WPP) $(CFLAGS) $<
+
+.c.obj:
+  $(WCC) $(CFLAGS) $<
+
+clean:
+  del $(OBJS) $(PROJ).sym
